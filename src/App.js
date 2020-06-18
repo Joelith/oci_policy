@@ -383,7 +383,7 @@ function App() {
                 </Grid>
                 <Grid item xs/>
                 <Grid item>
-                  <Button color="inherit">Source</Button>
+                  <Button href="https://github.com/Joelith/oci_policy" target="_blank" color="inherit">Source</Button>
                 </Grid>
               </Grid>
             </Toolbar>

@@ -289,6 +289,79 @@ data.subnets = clean({
 });
 
 
+data.route_tables = clean({
+  type: 'virtual-network-family',
+  title: 'route-tables',
+  permissions: {
+    inspect: {
+      permissions: ["ROUTE_TABLE_READ"],
+      apis: [getApi('ListRouteTables'), getApi('GetRouteTable')]
+    },
+    read: {
+      permissions: [],
+      apis: []
+    },
+    use: {
+      permissions: [],
+      apis: [],
+      partial_apis: []
+    },
+    manage: {
+      permissions: ["ROUTE_TABLE_ATTACH", "ROUTE_TABLE_DETACH", "ROUTE_TABLE_UPDATE", "ROUTE_TABLE_DELETE", "ROUTE_TABLE_CREATE", "ROUTE_TABLE_MOVE"],
+      apis: [],
+      partial_apis: [
+        getApi('CreateRouteTable', "also need 'manage vcns', 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
+        getApi('DeleteRouteTable', "also need 'manage vcns', 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
+        getApi('UpdateRouteTable', "also need 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
+        getApi('CreateSubnet', "also need 'manage vcns', 'manage subnets', 'manage security-lists', 'manage dhcp-options' and 'manage dhcp-options'"),
+        getApi('DeleteSubnet', "also need 'manage vcns', 'manage subnets', 'manage security-lists', 'manage dhcp-options' and 'manage dhcp-options'"),
+
+        getApi('UpdateSubnet', "also need 'manage subnets' if changing which route is associated with the subnet"),
+      ]
+    }
+  }
+});
+
+data.route_tables = clean({
+  type: 'virtual-network-family',
+  title: 'network-security-groups',
+  permissions: {
+    inspect: {
+      permissions: ["NETWORK_SECURITY_GROUP_INSPECT"],
+      apis: [],
+      partial_apis: [
+        getApi('AddNetworkSecurityGroupSecurityRules', "also need 'manage network-security-groups"),
+        getApi('UpdateNetworkSecurityGroupSecurityRules', "also need 'manage network-security-groups")
+      ]
+    },
+    read: {
+      permissions: ["NETWORK_SECURITY_GROUP_READ"],
+      apis: [getApi('GetNetworkSecurityGroup', 'ListNetworkSecurityGroups')]
+    },
+    use: {
+      permissions: ["NETWORK_SECURITY_GROUP_LIST_SECURITY_RULES", "NETWORK_SECURITY_GROUP_LIST_MEMBERS", "NETWORK_SECURITY_GROUP_UPDATE_MEMBERS"],
+      apis: [getApi('ListNetworkSecurityGroupSecurityRules'), getApi('ListNetworkSecurityGroupVnics')],
+      partial_apis: [
+        getApi('LaunchInstance', "also need 'manage instances', 'read instance-images', 'use vnics', 'use subnets', 'read app-catalog-listing'"),
+        getApi('AttachVnic', "also need 'manage instances', 'use subnets'"),
+        getApi('UpdateVnic', "also need 'use vnics'")
+      ]
+    },
+    manage: {
+      permissions: ["NETWORK_SECURITY_GROUP_UPDATE", "NETWORK_SECURITY_GROUP_CREATE", "NETWORK_SECURITY_GROUP_DELETE", "NETWORK_SECURITY_GROUP_MOVE", "NETWORK_SECURITY_GROUP_UPDATE_SECURITY_RULES"],
+      apis: [getApi('UpdateNetworkSecurityGroup'), getApi('ChangeNetworkSecurityGroupCompartment'), getApi('AddNetworkSecurityGroupSecurityRules'), getApi('UpdateNetworkSecurityGroupSecurityRules'), getApi('RemoveNetworkSecurityGroupSecurityRules')],
+      partial_apis: [
+        getApi('CreateNetworkSecurityGroup', "also need 'manage vcns'"),
+        getApi('DeleteNetworkSecurityGroup', "also need 'manage vcns'")
+      ]
+    }
+  }
+});
+
+
+
+
+
 data = Object.values(data);
 data.unshift(buildAll());
 
