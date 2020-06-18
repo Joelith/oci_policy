@@ -1,0 +1,345 @@
+[{
+  "type": "",
+  "title": "all-resources"
+},{
+  "type": "cluster-family",
+  "title": "cluster-family",
+  "permissions": {
+    "inspect": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_NODE_POOL_INSPECT"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "ListNodePools",
+        "url": ""
+      }]
+    },
+    "read": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      }]
+    },
+    "use": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ", "CLUSTER_USE"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      },{
+        "title": "GetClusterKubeconfig",
+        "url": ""
+      }]
+    },
+    "manage": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ", "CLUSTER_USE", "CLUSTER_CREATE", "CLUSTER_DELETE", "CLUSTER_UPDATE", "CLUSTER_MANAGE"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      },{
+        "title": "GetClusterKubeconfig",
+        "url": ""
+      },{
+        "title": "UpdateCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/UpdateCluster"
+      },{
+        "title": "AdministerK8s",
+        "url": ""
+      }],
+      "partial_apis": [{
+        "title" : "CreateCluster",
+        "url": "",
+        "note": "Also need 'use subnets', 'read virtual-network-family', and 'inspect compartments'"
+      },{
+        "title" : "DeleteCluster",
+        "url": "",
+        "note": "Also need 'manage cluster-node-pools', 'manage instance-family', 'use subnets' and 'use vnics'"
+      }]
+    }
+  }
+},{
+  "type": "cluster-family",
+  "title": "clusters",
+  "variables": [{
+    "value": "target.cluster.id",
+    "title": "The Cluster ID",
+    "type": "Resource Specific"
+  }],
+  "permissions": {
+    "inspect": {
+      "permissions": ["CLUSTER_INSPECT"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      }]
+    },
+    "read": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      }]
+    },
+    "use": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ", "CLUSTER_USE"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      },{
+        "title": "GetClusterKubeconfig",
+        "url": ""
+      }]
+    },
+    "manage": {
+      "permissions": ["CLUSTER_INSPECT", "CLUSTER_READ", "CLUSTER_USE", "CLUSTER_CREATE", "CLUSTER_DELETE", "CLUSTER_UPDATE", "CLUSTER_MANAGE"],
+      "apis": [{
+        "title": "ListClusters",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters"
+      },{
+        "title" : "ListWorkRequests",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster"
+      },{
+        "title" : "GetWorkRequest",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest"
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors"
+      },{
+        "title" : "ListWorkRequestLogs",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs"
+      },{
+        "title": "GetClusterKubeconfig",
+        "url": ""
+      },{
+        "title": "UpdateCluster",
+        "url": "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/UpdateCluster"
+      },{
+        "title": "AdministerK8s",
+        "url": ""
+      }],
+      "partial_apis": [{
+        "title" : "CreateCluster",
+        "url": "",
+        "note": "Also need 'use subnets', 'read virtual-network-family', and 'inspect compartments'"
+      },{
+        "title" : "DeleteCluster",
+        "url": "",
+        "note": "Also need 'manage cluster-node-pools', 'manage instance-family', 'use subnets' and 'use vnics'"
+      }]
+    }
+  }
+},{
+  "type": "cluster-family",
+  "title": "cluster-node-pools",
+  "variables": [{
+    "value": "target.nodepool.id",
+    "title": "The Node Pool ID",
+    "type": "Resource Specific"
+  }],
+  "permissions": {
+    "inspect": {
+      "permissions": ["CLUSTER_NODE_POOL_INSPECT"],
+      "apis": [{
+        "title": "ListNodePools",
+        "url": ""
+      },{
+        "title": "ListWorkRequests",
+        "url" : "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      }]
+    },
+    "read": {
+      "permissions": ["CLUSTER_NODE_POOL_INSPECT", "CLUSTER_NODE_POOL_READ"],
+      "apis": [{
+        "title": "ListNodePools",
+        "url": ""
+      },{
+        "title": "ListWorkRequests",
+        "url" : "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetNodePool",
+        "url": ""
+      },{
+        "title": "GetWorkRequest",
+        "url": ""
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": ""
+      },{
+        "title": "ListWorkRequestLogs",
+        "url": ""
+      }]
+    },
+    "use": {
+      "permissions": ["CLUSTER_NODE_POOL_INSPECT", "CLUSTER_NODE_POOL_READ"],
+      "apis": [{
+        "title": "ListNodePools",
+        "url": ""
+      },{
+        "title": "ListWorkRequests",
+        "url" : "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetNodePool",
+        "url": ""
+      },{
+        "title": "GetWorkRequest",
+        "url": ""
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": ""
+      },{
+        "title": "ListWorkRequestLogs",
+        "url": ""
+      }]
+    },
+    "manage": {
+      "permissions": ["CLUSTER_NODE_POOL_INSPECT", "CLUSTER_NODE_POOL_READ", "CLUSTER_NODE_POOL_CREATE", "CLUSTER_NODE_POOL_DELETE", "CLUSTER_NODE_POOL_UPDATE"],
+      "apis": [{
+        "title": "ListNodePools",
+        "url": ""
+      },{
+        "title": "ListWorkRequests",
+        "url" : "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests"
+      },{
+        "title": "GetNodePool",
+        "url": ""
+      },{
+        "title": "GetWorkRequest",
+        "url": ""
+      },{
+        "title": "ListWorkRequestErrors",
+        "url": ""
+      },{
+        "title": "ListWorkRequestLogs",
+        "url": ""
+      }],
+      "partial_apis":[{
+        "title": "CreateNodePool",
+        "url":"",
+        "note":"also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'"
+      },{
+        "title": "DeleteNodePool",
+        "url":"",
+        "note":"also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'"
+      },{
+        "title": "UpdateNodePool",
+        "url":"",
+        "note":"also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'"
+      }]
+    }
+  }
+},{
+  "type": "cluster-family",
+  "title": "cluster-work-requests"
+},{
+  "type": "compute-management-family",
+  "title": "compute-management-family"
+},{
+  "type": "data-catalog-family",
+  "title": "data-catalog-family"
+},{
+  "type": "database-family",
+  "title": "database-family"
+},{
+  "type": "dns",
+  "title": "dns"
+},{
+  "type": "file-family",
+  "title": "file-family"
+},{
+  "type": "instance-family",
+  "title": "instance-family"
+},{
+  "type": "object-family",
+  "title": "object-family"
+},{
+  "type": "virtual-network-family",
+  "title": "virtual-network-family"
+},{
+  "type": "volume-family",
+  "title": "volume-family"
+}]
