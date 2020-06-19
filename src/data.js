@@ -1,33 +1,33 @@
-
-const api = {
-  ListClusters: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/ClusterSummary/ListClusters",
-  ListWorkRequests: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestSummary/ListWorkRequests",
-  GetCluster: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/Cluster/GetCluster",
-  GetWorkRequest: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequest/GetWorkRequest",
-  ListWorkRequestErrors: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestError/ListWorkRequestErrors",
-  ListWorkRequestLogs: "https://docs.cloud.oracle.com/en-us/iaas/api/#/en/containerengine/20180222/WorkRequestLogEntry/ListWorkRequestLogs",
-  GetClusterKubeconfig: ""
-}
-const getApi = (name, note) => {
-  return {
-    title: name,
-    url: api[name],
-    note: note
-  }
-}
-
+import cluster_family from './data/cluster-family';
+import compute_management_family from './data/compute-management-family';
+import data_catalog_family from './data/data-catalog-family';
+import database_family from './data/database-family';
+import autonomous_database_family from './data/autonomous-database-family';
+import dns from './data/dns';
+import file_family from './data/file-family';
+import instance_family from './data/instance-family';
+import iam_family from './data/iam-family';
+import object_family from './data/object-family';
+import virtual_network_family from './data/virtual-network-family';
+import volume_family from './data/volume-family';
+import additional_compute_family from './data/additional-compute-family';
 
 let data = {};
 const clean = (info) => {
   info.permissions.read.permissions = info.permissions.inspect.permissions.concat(info.permissions.read.permissions);
   info.permissions.read.apis = info.permissions.inspect.apis.concat(info.permissions.read.apis);
+  info.permissions.read.partial_apis = (info.permissions.inspect.partial_apis || []).concat(info.permissions.read.partial_apis || []);
 
   info.permissions.use.permissions = info.permissions.read.permissions.concat(info.permissions.use.permissions);
   info.permissions.use.apis = info.permissions.read.apis.concat(info.permissions.use.apis);
+  info.permissions.use.partial_apis = (info.permissions.read.partial_apis || []).concat(info.permissions.use.partial_apis || []);
 
   info.permissions.manage.permissions = info.permissions.use.permissions.concat(info.permissions.manage.permissions);
   info.permissions.manage.apis = info.permissions.use.apis.concat(info.permissions.manage.apis);
+  info.permissions.manage.partial_apis = (info.permissions.use.partial_apis || []).concat(info.permissions.manage.partial_apis || []);
 
+  if (info.type === info.title) return info; // We are in the root family already
+  if (info.type === 'iam-family') return info; // IAM family doesn't exist as a useable resource type
   if (!data[info.type]) data[info.type] = {
     type: info.type,
     title: info.type,
@@ -115,252 +115,58 @@ const buildAll = () => {
   }
 }
 
-const clusters = {
-  type: 'cluster-family',
-  title: 'clusters',
-  variables: [{
-    "value": "target.cluster.id",
-    "title": "The Cluster ID",
-    "type": "Resource Specific"
-  }],
-  permissions: {
-    inspect: {
-      permissions: ["CLUSTER_INSPECT"],
-      apis: [getApi('ListClusters'), getApi('ListWorkRequests')]
-    },
-    read: {
-      permissions: ["CLUSTER_READ"],
-      apis: [getApi('GetCluster')]
-    },
-    use: {
-      permissions: ["CLUSTER_USE"],
-      apis: [getApi('GetWorkRequest'), getApi('ListWorkRequestErrors'), getApi('ListWorkRequestLogs'), getApi('GetClusterKubeconfig')]
-    },
-    manage: {
-      permissions: ["CLUSTER_CREATE", "CLUSTER_DELETE", "CLUSTER_UPDATE", "CLUSTER_MANAGE"],
-      apis: []
-    }
-  }
-}
-
-const cluster_node_pools = {
-  type: 'cluster-family',
-  title: 'cluster_node_pools',
-  variables: [{
-    "value": "target.nodepool.id",
-    "title": "The Node Pool ID",
-    "type": "Resource Specific"
-  }],
-  permissions: {
-    inspect: {
-      permissions: ["CLUSTER_NODE_POOL_INSPECT"],
-      apis: [getApi('ListNodePools'), getApi('ListWorkRequests')]
-    },
-    read: {
-      permissions: ["CLUSTER_NODE_POOL_READ"],
-      apis: [getApi('GetNodePool'), getApi('GetWorkRequest'), getApi('ListWorkRequestErrors'), getApi('ListWorkRequestLogs')]
-    },
-    use: {
-      permissions: [],
-      apis: []
-    },
-    manage: {
-      permissions: ["CLUSTER_NODE_POOL_CREATE", "CLUSTER_NODE_POOL_DELETE", "CLUSTER_NODE_POOL_UPDATE"],
-      apis: [],
-      partial_apis: [
-        getApi('CreateNodePool', "also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'"), 
-        getApi('DeleteNodePool', "also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'"),
-        getApi('UpdateNodePool', "also need 'manage instance-family', 'use subnets', 'use vnics', and 'inspect compartments'")
-      ]
-    }
-  }
-}
-
-const cluster_work_requests = {
-  type: 'cluster-family',
-  title: 'cluster_work_requests',
-  permissions: {
-    inspect: {
-      permissions: ["CLUSTER_WORK_REQUEST_INSPECT"],
-      apis: [getApi('ListWorkRequests')]
-    },
-    read: {
-      permissions: ["CLUSTER_WORK_REQUEST_READ"],
-      apis: [getApi('GetWorkRequest'), getApi('ListWorkRequestErrors'), getApi('ListWorkRequestLogs')]
-    },
-    use: {
-      permissions: [],
-      apis: []
-    },
-    manage: {
-      permissions: ["CLUSTER_WORK_REQUEST_DELETE"],
-      apis: [getApi('DeleteWorkRequest')]
-    }
-  }
-}
-
-
-data.clusters = clean(clusters);
-data.cluster_node_pools = clean(cluster_node_pools);
-data.cluster_work_requests = clean(cluster_work_requests);
-
-data.vcns = clean({
-  type: 'virtual-network-family',
-  title: 'vcns',
-  permissions: {
-    inspect: {
-      permissions: ["VCN_READ"],
-      apis: [getApi('ListVcns'), getApi('GetVcn')],
-      partial_apis: [
-        getApi('CreateNatGateway', "also need 'manage nat-gateways' and 'manage vcns' or just use 'manage virtual-network-family'"),
-        getApi('DeleteNatGateway', "also need 'manage nat-gateways' and 'manage vcns' or just use 'manage virtual-network-family'"),
-      ]
-    },
-    read: {
-      permissions: [],
-      apis: []
-    },
-    use: {
-      permissions: [],
-      apis: []
-    },
-    manage: {
-      permissions: ["VCN_ATTACH", "VCN_DETACH", "VCN_UPDATE", "VCN_CREATE", "VCN_DELETE", "VCN_MOVE"],
-      apis: [getApi('CreateVcn'), getApi('UpdateVcn'), getApi('DeleteVcn'), getApi('ChangeVcnCompartment')],
-      partial_apis: [
-        getApi('CreateSubnet', "also need 'manage route-tables', 'manage security-lists', and 'manage dhcp-options' or just use 'manage virtual-network-family'"),
-        getApi('DeleteSubnet', "also need 'manage route-tables', 'manage security-lists', and 'manage dhcp-options' or just use 'manage virtual-network-family'"),
-        getApi('CreateInternetGateway', "also need 'manage internet-gateways'"),
-        getApi('DeleteInternetGateway', "also need 'manage internet-gateways'"),
-        getApi('CreateLocalPeeringGateway', "also need 'manage local-peering-gateways' and 'manage route-tables' if you associate a route table during creation"),
-        getApi('DeleteLocalPeeringGateway', "also need 'manage local-peering-gateways'"),
-        getApi('CreateNatGateway', "also need 'manage nat-gateways'"),
-        getApi('DeleteNatGateway', "also need 'manage nat-gateways'"),
-        getApi('CreateNetworkSecurityGroup', "also need 'manage network-security-groups'"),
-        getApi('DeleteNetworkSecurityGroup', "also need 'manage network-security-groups'"),
-        getApi('CreateRouteTable', "also need 'manage route-tables', 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
-        getApi('CreateServiceGateway', "also need 'manage service-gateways'"),
-        getApi('DeleteServiceGateway', "also need 'manage service-gateways'"),
-        getApi('CreateSecurityList', "also need 'manage service-lists'"),
-        getApi('DeleteSecurityList', "also need 'manage service-lists'"),
-        getApi('CreateDhcpOptions', "also need 'manage dhcp-options'"),
-        getApi('DeleteDhcpOptions', "also need 'manage dhcp-options'"),
-        getApi('CreateDrgAttachment', "also need 'manage drg' and 'manage route-tables"),
-        getApi('DeleteDrgAttachment', "also need 'manage drg' and 'manage route-tables")
-      ]
-    }
-  }
+data = { ...data, ...cluster_family};
+Object.values(cluster_family).map((item) => {
+  clean(item);
 });
-
-data.subnets = clean({
-  type: 'virtual-network-family',
-  title: 'subnets',
-  permissions: {
-    inspect: {
-      permissions: ["SUBNET_READ"],
-      apis: [getApi('ListSubnets'), getApi('GetSubnet')]
-    },
-    read: {
-      permissions: [],
-      apis: []
-    },
-    use: {
-      permissions: ["SUBNET_ATTACH", "SUBNET_DETACH"],
-      apis: [],
-      partial_apis: [
-        getApi('LaunchInstance', "also need 'use vnics', 'use network-security-groups' and 'manage instance-family'"),
-        getApi('TerminateInstance', "also need 'manage instance-family' and 'use volumes' if a volume is attached"),
-        getApi('AttachVnic', "also need 'manage instances', 'use network-security-groups' and either 'use vnics' or 'use instance-family'"),
-        getApi('DetachVnic', "also need 'manage instances' and either 'use vnics' or 'use instance-family'"),
-        getApi('CreatePrivateIp', "also need 'use private-ips' and 'use vnics'"),
-        getApi('DeletePrivateIp', "also need 'use private-ips' and 'use vnics'")
-      ]
-    },
-    manage: {
-      permissions: ["SUBNET_CREATE", "SUBNET_UPDATE", "SUBNET_DELETE", "SUBNET_MOVE"],
-      apis: [getApi('ChangeSubnetCompartment')],
-      partial_apis: [
-        getApi('CreateSubnet', "also need 'manage vcns', 'manage route-tables', 'manage security-lists', 'manage dhcp-options'"),
-        getApi('DeleteSubnet', "also need 'manage vcns', 'manage route-tables', 'manage security-lists', 'manage dhcp-options'"),
-        getApi('UpdateSubnet', "also need 'manage route-tables' if changing which route table is associated with the subnet, 'manage security-lists' if chaning which security lists are associated with the subnet and manage dhcp-options' if changing which set of DHCP options is associated with the subnet")
-      ]
-    }
-  }
+data = { ...data, ...compute_management_family};
+Object.values(compute_management_family).map((item) => {
+  clean(item);
 });
-
-
-data.route_tables = clean({
-  type: 'virtual-network-family',
-  title: 'route-tables',
-  permissions: {
-    inspect: {
-      permissions: ["ROUTE_TABLE_READ"],
-      apis: [getApi('ListRouteTables'), getApi('GetRouteTable')]
-    },
-    read: {
-      permissions: [],
-      apis: []
-    },
-    use: {
-      permissions: [],
-      apis: [],
-      partial_apis: []
-    },
-    manage: {
-      permissions: ["ROUTE_TABLE_ATTACH", "ROUTE_TABLE_DETACH", "ROUTE_TABLE_UPDATE", "ROUTE_TABLE_DELETE", "ROUTE_TABLE_CREATE", "ROUTE_TABLE_MOVE"],
-      apis: [],
-      partial_apis: [
-        getApi('CreateRouteTable', "also need 'manage vcns', 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
-        getApi('DeleteRouteTable', "also need 'manage vcns', 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
-        getApi('UpdateRouteTable', "also need 'manage internet-gateways', 'manage drgs', 'manage private-ips', 'manage local-peering-gateways', 'use nat-gateways' and 'use service-gateways'"),
-        getApi('CreateSubnet', "also need 'manage vcns', 'manage subnets', 'manage security-lists', 'manage dhcp-options' and 'manage dhcp-options'"),
-        getApi('DeleteSubnet', "also need 'manage vcns', 'manage subnets', 'manage security-lists', 'manage dhcp-options' and 'manage dhcp-options'"),
-
-        getApi('UpdateSubnet', "also need 'manage subnets' if changing which route is associated with the subnet"),
-      ]
-    }
-  }
+data = { ...data, ...additional_compute_family};
+Object.values(additional_compute_family).map((item) => {
+  clean(item);
 });
-
-data.route_tables = clean({
-  type: 'virtual-network-family',
-  title: 'network-security-groups',
-  permissions: {
-    inspect: {
-      permissions: ["NETWORK_SECURITY_GROUP_INSPECT"],
-      apis: [],
-      partial_apis: [
-        getApi('AddNetworkSecurityGroupSecurityRules', "also need 'manage network-security-groups"),
-        getApi('UpdateNetworkSecurityGroupSecurityRules', "also need 'manage network-security-groups")
-      ]
-    },
-    read: {
-      permissions: ["NETWORK_SECURITY_GROUP_READ"],
-      apis: [getApi('GetNetworkSecurityGroup', 'ListNetworkSecurityGroups')]
-    },
-    use: {
-      permissions: ["NETWORK_SECURITY_GROUP_LIST_SECURITY_RULES", "NETWORK_SECURITY_GROUP_LIST_MEMBERS", "NETWORK_SECURITY_GROUP_UPDATE_MEMBERS"],
-      apis: [getApi('ListNetworkSecurityGroupSecurityRules'), getApi('ListNetworkSecurityGroupVnics')],
-      partial_apis: [
-        getApi('LaunchInstance', "also need 'manage instances', 'read instance-images', 'use vnics', 'use subnets', 'read app-catalog-listing'"),
-        getApi('AttachVnic', "also need 'manage instances', 'use subnets'"),
-        getApi('UpdateVnic', "also need 'use vnics'")
-      ]
-    },
-    manage: {
-      permissions: ["NETWORK_SECURITY_GROUP_UPDATE", "NETWORK_SECURITY_GROUP_CREATE", "NETWORK_SECURITY_GROUP_DELETE", "NETWORK_SECURITY_GROUP_MOVE", "NETWORK_SECURITY_GROUP_UPDATE_SECURITY_RULES"],
-      apis: [getApi('UpdateNetworkSecurityGroup'), getApi('ChangeNetworkSecurityGroupCompartment'), getApi('AddNetworkSecurityGroupSecurityRules'), getApi('UpdateNetworkSecurityGroupSecurityRules'), getApi('RemoveNetworkSecurityGroupSecurityRules')],
-      partial_apis: [
-        getApi('CreateNetworkSecurityGroup', "also need 'manage vcns'"),
-        getApi('DeleteNetworkSecurityGroup', "also need 'manage vcns'")
-      ]
-    }
-  }
+data = { ...data, ...data_catalog_family};
+Object.values(data_catalog_family).map((item) => {
+  clean(item);
 });
-
-
-
-
+data = { ...data, ...database_family};
+Object.values(database_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...autonomous_database_family};
+Object.values(autonomous_database_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...dns};
+Object.values(dns).map((item) => {
+  clean(item);
+});
+data = { ...data, ...file_family};
+Object.values(file_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...instance_family};
+Object.values(instance_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...iam_family};
+Object.values(iam_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...object_family};
+Object.values(object_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...virtual_network_family};
+Object.values(virtual_network_family).map((item) => {
+  clean(item);
+});
+data = { ...data, ...volume_family};
+Object.values(volume_family).map((item) => {
+  clean(item);
+});
 
 data = Object.values(data);
 data.unshift(buildAll());

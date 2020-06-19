@@ -1,7 +1,6 @@
 import React, {Fragment, useEffect} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Autocomplete as MuiAutocomplete} from '@material-ui/lab';
-import resourceTypeOptions from './resource_types.json';
 import data from './data.js';
 import styled from 'styled-components';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
@@ -94,7 +93,7 @@ const PermissionWrapper = styled.div`
   width: 900px;
 `;
 function ApiLink (props) {
-  const { title, url, note} = props;
+  const { title, url, note} = props.api;
   return (
     <li>
       <a href={url}>{title}</a> {note && ` - ${note}`}
@@ -110,6 +109,54 @@ const generalVariables = [{
   value: 'request.user.mfaTotpVerified',
   title: 'Whether the user has been verified by Multi-Factor Authentication',
   type: 'Common'
+},{
+  value: 'request.groups.id',
+  title: 'OCID of the group the user is in',
+  type: 'Common'
+},{
+  value: 'request.permission',
+  title: 'The underlying permission',
+  type: 'Common'
+},{
+  value: 'request.operation',
+  title: 'The API operation being requested',
+  type: 'Common'
+},{
+  value: 'request.networkSource.name',
+  title: 'The name of the network source group',
+  type: 'Common'
+},{
+  value: 'request.region',
+  title: 'The 3-letter key for the region',
+  type: 'Common'
+},{
+  value: 'request.ad',
+  title: 'The Availability Domain of the request',
+  type: 'Common'
+},{
+  value: 'request.principal.compartment.tag',
+  title: 'Compare against compartment tag',
+  type: 'Common'
+},{
+  value: 'request.principal.group.tag',
+  title: 'Tags applied to user group',
+  type: 'Common'
+},{
+  value: 'target.compartment.name',
+  title: 'The name of the compartment containing the primary resource',
+  type: 'Common'
+},{
+  value: 'target.compartment.id',
+  title: 'The OCID of the compartment containing the primary resource',
+  type: 'Common'
+},{
+  value: 'target.compartment.tag',
+  title: 'The tag applied to the target compartment',
+  type: 'Common'
+},{
+  value: 'request.request.tag',
+  title: 'The tag applied to the tag resource of the request being evaluated',
+  type: 'Common'
 }]
 
 function PermissionExplanation (props) {
@@ -117,7 +164,7 @@ function PermissionExplanation (props) {
 
   if (!verb) return null;
 
-  if (!resourceType || !permissions || !permissions[verb]) {
+  if (!resourceType || !permissions || !permissions[verb] || (permissions[verb].apis.length == 0 && permissions[verb].permissions.length == 0)) {
 
     let verb_description = '';
     if (!group) verb_description = 'This allows users in a group to ';
@@ -151,13 +198,13 @@ function PermissionExplanation (props) {
         <p>This gives the following permissions {group ? `to users in the ${group} group` : null}: {permissions[verb].permissions.join(', ')}
       &nbsp;and access to the following APIs: </p>
         <ul>
-          { permissions[verb].apis.map((api, index) => <ApiLink key={index} title={api.title} url={api.url}/>)}
+          { permissions[verb].apis.map((api, index) => <ApiLink key={index} api={api}/>)}
         </ul>
-        { permissions[verb].partial_apis &&
+        { permissions[verb].partial_apis && permissions[verb].partial_apis.length > 0 &&
         <div>
           <p>As well as partial access to the following APIs</p>
           <ul>
-            { permissions[verb].partial_apis.map((api) => <ApiLink key={api.title} title={api.title} url={api.url} note={api.note}/>)}
+            { permissions[verb].partial_apis.map((api, index) => <ApiLink key={index} api={api}/>)}
           </ul>
         </div>
         }
@@ -287,6 +334,9 @@ function WhereManage (props) {
       <ExpansionPanelDetails>
         
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Typography variant="body2">Note: Not all variables will work with all resource-types. Check the documentation if in doubt</Typography>
+          </Grid>
           { conditions.length > 1 && 
             <Grid item xs={12}>
               <FormControl>
